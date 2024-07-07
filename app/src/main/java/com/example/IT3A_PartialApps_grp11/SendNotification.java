@@ -22,7 +22,7 @@ public class SendNotification {
     private final String title;
     private final String body;
     private final Context context;
-    private final String postUrl = "https://fcm.googleapis.com/v1/projects/finalprojbrgymanagement/messages:send"; // Correct URL
+    private final String postUrl = "https://fcm.googleapis.com/v1/projects/finalprojbrgymanagement/messages:send";
 
     public SendNotification(String userFCMtoken, String title, String body, Context context) {
         this.userFCMtoken = userFCMtoken;
@@ -40,17 +40,15 @@ public class SendNotification {
             notificationObject.put("title", title);
             notificationObject.put("body", body);
             messageObject.put("token", userFCMtoken);
-            messageObject.put("notification", notificationObject); // Added notification object to message
+            messageObject.put("notification", notificationObject);
             mainObj.put("message", messageObject);
 
-            Log.d("SendNotification", "Request JSON: " + mainObj.toString()); // Log the JSON payload
+            Log.d("SendNotification", "Request JSON: " + mainObj.toString());
 
             JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, postUrl, mainObj, response -> {
-                // Handle the successful response
                 Log.d("SendNotification", "Response: " + response.toString());
                 Toast.makeText(context, "Notification sent successfully", Toast.LENGTH_SHORT).show();
             }, volleyError -> {
-                // Handle the error response
                 Log.e("SendNotification", "Failed to send notification: " + volleyError.getMessage());
                 Toast.makeText(context, "Failed to send notification: " + volleyError.getMessage(), Toast.LENGTH_SHORT).show();
             }) {
