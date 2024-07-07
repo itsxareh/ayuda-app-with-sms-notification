@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawLay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Admin"
+    android:fitsSystemWindows="true"
+    tools:openDrawer="start">
+
+  <include
+        layout="@layout/activity_admin_content"/>
+    <include
+        layout="@layout/gridmenu"/>
+
+
+     <com.google.android.material.navigation.NavigationView
+         android:id="@+id/navigation_view"
+         android:layout_width="wrap_content"
+         android:layout_height="match_parent"
+         android:layout_gravity="start"
+         app:menu="@menu/menu_item"
+         app:headerLayout="@layout/header_lay"
+         app:itemTextColor="@color/black"
+         tools:ignore="MissingConstraints"/> -->
+
+   <!-- <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/logo"/>
+
+     <LinearLayout
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:padding="120dp"
+         android:textAlignment="center">
+
+         <TextView
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_marginTop="200dp"
+         android:text="Welcome Admin!"
+         android:textSize="30dp"
+         android:textAppearance="@string/common_google_play_services_enable_text"
+         android:textAlignment="center"
+         android:fontFamily="sans-serif-condensed-medium"/>
+
+     </LinearLayout> -->
+
+</androidx.drawerlayout.widget.DrawerLayout>
