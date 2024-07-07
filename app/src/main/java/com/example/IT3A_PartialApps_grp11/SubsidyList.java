@@ -194,7 +194,7 @@ public class SubsidyList extends AppCompatActivity {
 
         Bitmap bitmapLeft = BitmapFactory.decodeResource(getResources(), R.drawable.quezoncitylogo);
         Bitmap scaledBitmapleft = Bitmap.createScaledBitmap(bitmapLeft, 100, 100,false);
-        Bitmap bitmapRight = BitmapFactory.decodeResource(getResources(), R.drawable.logo);
+        Bitmap bitmapRight = BitmapFactory.decodeResource(getResources(), R.drawable.images_removebg_preview);
         Bitmap scaledBitmapright = Bitmap.createScaledBitmap(bitmapRight, 100, 100,false);
         canvas.drawBitmap(scaledBitmapleft, 20, 20, paint);
         canvas.drawBitmap(scaledBitmapright, pageWidth-120, 20, paint);
