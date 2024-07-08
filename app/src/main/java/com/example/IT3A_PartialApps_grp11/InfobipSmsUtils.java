@@ -9,8 +9,8 @@ import java.net.URL;
 
 public class InfobipSmsUtils {
 
-    private static final String BASE_URL = "https://xlvg4e.api.infobip.com/sms/2/text/advanced";
-    private static final String API_KEY = "27b080a561b453165de964b5b8c34f76-ebadca4e-45df-4be0-8eaa-158d07e2debd";
+    private static final String BASE_URL = "https://gg8ep6.api.infobip.com/sms/2/text/advanced";
+    private static final String API_KEY = "f83d5263c50f49fa31b44d67adaebdc5-199f0de7-6fb2-4124-b967-c22d30ccf637";
 
     public static void sendSms(String phoneNumber, String message) {
         new SendSmsTask(phoneNumber, message).execute();

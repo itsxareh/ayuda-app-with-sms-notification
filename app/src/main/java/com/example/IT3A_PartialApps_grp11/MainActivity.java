@@ -35,10 +35,8 @@ import java.io.IOException;
 public class MainActivity extends AppCompatActivity {
 
     DrawerLayout drawerLayout;
-    ImageButton buttonDrawerToggle;
-    NavigationView navigationView;
 
-    TextView userFullname, userEmail;
+    TextView username;
     FirebaseAuth mAuth;
     FirebaseFirestore fStore;
 
@@ -49,20 +47,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 //        try {
 //            FCMUtils.initializeFirebase(this);
-//            FCMUtils.sendPushNotification("user_token_here", "Notification Title", "Notification Body");
+//            FCMUtils.sendPushNotification("User Token", "Notification Title", "Notification Body");
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
-        drawerLayout = findViewById(R.id.drawLay);
-        buttonDrawerToggle = findViewById(R.id.buttonDrawerToggle);
-        navigationView = findViewById(R.id.navigation_view_user);
 
         mAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
 
-        View headerView = navigationView.getHeaderView(0);
-        userFullname = headerView.findViewById(R.id.userFullname);
-        userEmail = headerView.findViewById(R.id.userEmail);
+        username = findViewById(R.id.usernameText);
 
         CardView cardLogout = findViewById(R.id.cardLogoutUser);
         CardView cardAnnouncement = findViewById(R.id.cardAnnouncementUser);
@@ -103,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
 
                                 FirebaseAuth.getInstance().signOut();
+                                clearFCMToken();
                                 Intent intent = new Intent(getApplicationContext(), Login.class);
 
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -115,56 +109,18 @@ public class MainActivity extends AppCompatActivity {
                         .show();
             }
         });
-
-        buttonDrawerToggle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                drawerLayout.open();
-            }
-        });
-
-    /*    navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
-                int itemId = item.getItemId();
-
-                if (itemId == R.id.dashboard) {
-
-                    Toast.makeText(MainActivity.this, "Profile selected!", Toast.LENGTH_SHORT).show();
-
-                }
-                if (itemId == R.id.subsidy) {
-
-                    Toast.makeText(MainActivity.this, "Subsidy Status selected!", Toast.LENGTH_SHORT).show();
-
-                }
-                if (itemId == R.id.announcement) {
-
-                    Toast.makeText(MainActivity.this, "Announcement selected!", Toast.LENGTH_SHORT).show();
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                    builder.setMessage("Coming soon!")
-                            .setCancelable(false)
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                }
-                            });
-                    AlertDialog alert = builder.create();
-                    alert.show();
-
-                }
-                if (itemId == R.id.settings) {
-
-                    Toast.makeText(MainActivity.this, "Settings selected!", Toast.LENGTH_SHORT).show();
-
-                }
-                drawerLayout.close();
-                return false;
-            }
-        }); */
         setUserInformation();
     }
-
+    private void clearFCMToken() {
+        FirebaseMessaging.getInstance().deleteToken()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Log.d("Token", "FCM token deleted successfully");
+                    } else {
+                        Log.w("Token", "Failed to delete FCM token", task.getException());
+                    }
+                });
+    }
     private void setUserInformation() {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
@@ -176,8 +132,7 @@ public class MainActivity extends AppCompatActivity {
                     if (documentSnapshot.exists()) {
                         User user = documentSnapshot.toObject(User.class);
                         if (user != null) {
-                            userFullname.setText(user.getFullName());
-                            userEmail.setText(user.getUserEmail());
+                            username.setText(user.getFullName());
                         }
                     }
                 }
@@ -209,30 +164,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-          /*  Button logout = findViewById(R.id.logoutBtn);
-            logout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    new AlertDialog.Builder(MainActivity.this)
-                            .setTitle("Logout")
-                            .setMessage("Are you sure you want to logout?")
-                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                    FirebaseAuth.getInstance().signOut();
-                                    Intent intent = new Intent(getApplicationContext(), Login.class);
-
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    startActivity(intent);
-                                    finish();
-                                }
-                            })
-                            .setNegativeButton(android.R.string.no, null)
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .show();
-                }
-            }); */
     private void getUserSubsidyStatus() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {

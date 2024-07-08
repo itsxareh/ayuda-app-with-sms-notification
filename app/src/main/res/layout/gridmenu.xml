@@ -2,31 +2,92 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/lightorange"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="100dp">
+    <View
+    android:id="@+id/header"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="@color/orange" />
 
+    <TextView
+        android:id="@+id/helloText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello,"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:layout_margin="10dp" />
+    <TextView
+        android:id="@+id/usernameText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/helloText"
+        android:text="User name"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:layout_marginVertical="10dp" />
+
+    <RelativeLayout
+        android:id="@+id/topHeader"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:paddingVertical="10dp"
+        android:layout_marginTop="50dp">
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginLeft="50dp"
+            android:src="@drawable/images_removebg_preview"/>
+        <TextView
+            android:id="@+id/barangayText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/logo"
+            android:text="Brgy. Tatalon"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginTop="24dp"
+            android:layout_marginLeft="14dp"
+            android:textColor="@color/black" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="DASHBOARD"
-            android:textColor="@color/black"
-            android:textSize="30dp"
-            android:textStyle="bold"/>
-
+            android:layout_toRightOf="@id/logo"
+            android:layout_below="@id/barangayText"
+            android:text="Distric IV, QC"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginLeft="14dp"
+            android:textColor="@color/black" />
     </RelativeLayout>
+    <View
+        android:id="@+id/blackLine"
+        android:layout_below="@id/topHeader"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/black" />
+    <TextView
+        android:id="@+id/dashboardText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/blackLine"
+        android:text="DASHBOARD"
+        android:textColor="@color/black"
+        android:layout_marginTop="20dp"
+        android:textSize="30dp"
+        android:textStyle="bold"/>
 
     <GridLayout
+        android:layout_below="@id/dashboardText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:columnCount="2"
         android:padding="16dp"
-        android:gravity="center_vertical"
-        android:layout_marginTop="150dp">
+        android:gravity="center_vertical">
 
                     <!--CardView 1-->
         <androidx.cardview.widget.CardView
@@ -36,7 +97,6 @@
             app:cardCornerRadius="15dp"
             app:cardElevation="12dp"
             android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
             android:layout_margin="8dp">
 
             <LinearLayout
@@ -72,7 +132,6 @@
             app:cardCornerRadius="15dp"
             app:cardElevation="12dp"
             android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
             android:layout_margin="8dp">
 
             <LinearLayout
@@ -105,7 +164,6 @@
             app:cardCornerRadius="15dp"
             app:cardElevation="12dp"
             android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
             android:layout_margin="8dp">
 
             <LinearLayout
@@ -139,7 +197,6 @@
             app:cardCornerRadius="15dp"
             app:cardElevation="12dp"
             android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
             android:layout_margin="8dp">
 
             <LinearLayout
@@ -172,7 +229,6 @@
             app:cardCornerRadius="15dp"
             app:cardElevation="12dp"
             android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
             android:layout_margin="8dp">
 
             <LinearLayout
@@ -206,7 +262,6 @@
             app:cardCornerRadius="15dp"
             app:cardElevation="12dp"
             android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
             android:layout_margin="8dp">
             <LinearLayout
                 android:layout_width="match_parent"

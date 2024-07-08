@@ -59,9 +59,7 @@ public class Admin extends AppCompatActivity {
     private static final AtomicInteger messageId = new AtomicInteger(0);
     private OkHttpClient client = new OkHttpClient();
     DrawerLayout drawerLayout;
-    ImageButton buttonDrawerToggle;
-    NavigationView navigationView;
-    TextView nameView, emailView;
+    TextView nameView, emailView, username;
     FirebaseAuth mAuth;
     FirebaseFirestore fStore;
 
@@ -70,18 +68,11 @@ public class Admin extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
 
-        drawerLayout = findViewById(R.id.drawLay);
-        buttonDrawerToggle = findViewById(R.id.buttonDrawerToggle);
-        navigationView = findViewById(R.id.navigation_view);
-
         mAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
 
 
-
-        View headerView = navigationView.getHeaderView(0);
-        nameView = headerView.findViewById(R.id.nameView);
-        emailView = headerView.findViewById(R.id.emailView);
+        username = findViewById(R.id.usernameText);
 
         CardView cardBeneficiaries = findViewById(R.id.cardBeneficiaries);
         CardView cardLogout = findViewById(R.id.cardLogout);
@@ -152,13 +143,6 @@ public class Admin extends AppCompatActivity {
             }
         });
 
-        buttonDrawerToggle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                drawerLayout.open();
-            }
-        });
-
         // Set user information in the header
         createNotificationChannel();
         setUserInformation();
@@ -186,8 +170,7 @@ public class Admin extends AppCompatActivity {
                     if (documentSnapshot.exists()) {
                         User user = documentSnapshot.toObject(User.class);
                         if (user != null) {
-                            nameView.setText(user.getFullName());
-                            emailView.setText(user.getUserEmail());
+                            username.setText(user.getFullName());
                         }
                     }
                 }
@@ -266,10 +249,13 @@ public class Admin extends AppCompatActivity {
                         for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                             User user = documentSnapshot.toObject(User.class);
                             Log.d("adminjava", user.getUserEmail());
-                            Log.d("FCMTOKEN", user.getFcmToken());
+                            if (user.getFcmToken() != null) {
+//                                sendPushNotification(user.getFcmToken(), "Subsidy Status", customMessage);
+                            } else {
+                                Log.d("FCMTOKEN", "FCM Token is null, skip push notification.");
+                            }
 //                            MailUtils.sendEmail(user.getUserEmail(), "SUBSIDY STATUS: FOR CLAIMING", customMessage);
-//                            sendSms(user.getPhoneNumber(), customMessage);
-                            sendPushNotification(user.getFcmToken(), "Subsidy Status", customMessage);
+                            sendSms(user.getPhoneNumber(), customMessage);
 
                         }
                         Toast.makeText(Admin.this, "Emails sent successfully", Toast.LENGTH_SHORT).show();
@@ -288,21 +274,5 @@ public class Admin extends AppCompatActivity {
             }
         }, 300);
     }
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            drawerLayout.openDrawer(navigationView);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
-    @Override
-    public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(navigationView)) {
-            drawerLayout.closeDrawer(navigationView);
-        } else {
-            super.onBackPressed();
-        }
-    }
 }
