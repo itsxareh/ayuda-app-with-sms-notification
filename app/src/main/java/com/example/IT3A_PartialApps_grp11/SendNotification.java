@@ -22,7 +22,7 @@ public class SendNotification {
     private final String title;
     private final String body;
     private final Context context;
-    private final String postUrl = "https://fcm.googleapis.com/v1/projects/finalprojbrgymanagement/messages:send";
+    private final String postUrl = "https://fcm.googleapis.com/v1/projects/finalprojbrgymanagementnotifs/messages:send";
 
     public SendNotification(String userFCMtoken, String title, String body, Context context) {
         this.userFCMtoken = userFCMtoken;
@@ -50,6 +50,10 @@ public class SendNotification {
                 Toast.makeText(context, "Notification sent successfully", Toast.LENGTH_SHORT).show();
             }, volleyError -> {
                 Log.e("SendNotification", "Failed to send notification: " + volleyError.getMessage());
+                if (volleyError.networkResponse != null) {
+                    Log.e("SendNotification", "Volley Error Code: " + volleyError.networkResponse.statusCode);
+                    Log.e("SendNotification", "Volley Error Data: " + new String(volleyError.networkResponse.data));
+                }
                 Toast.makeText(context, "Failed to send notification: " + volleyError.getMessage(), Toast.LENGTH_SHORT).show();
             }) {
                 @NonNull
@@ -57,9 +61,10 @@ public class SendNotification {
                 public Map<String, String> getHeaders() {
                     AccessToken accessToken = new AccessToken();
                     String accessKey = accessToken.getAccessToken();
+                    Log.d("SendNotification", "Access Token: " + accessKey);
                     Map<String, String> header = new HashMap<>();
-                    header.put("content-type", "application/json");
-                    header.put("authorization", "Bearer " + accessKey);
+                    header.put("Content-Type", "application/json");
+                    header.put("Authorization", "Bearer " + accessKey);
                     return header;
                 }
             };

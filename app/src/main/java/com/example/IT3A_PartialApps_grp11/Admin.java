@@ -162,8 +162,7 @@ public class Admin extends AppCompatActivity {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             String userId = currentUser.getUid();
-
-            // Fetch user information
+            Log.d("USER ID", userId);
             fStore.collection("Users").document(userId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -177,29 +176,29 @@ public class Admin extends AppCompatActivity {
             });
 
             // Fetch FCM token and update in Firestore
-            FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
-                @Override
-                public void onComplete(@NonNull Task<String> task) {
-                    if (!task.isSuccessful()) {
-                        Log.w("FCM", "Fetching FCM registration token failed", task.getException());
-                        return;
-                    }
-                    String token = task.getResult();
-
-                    fStore.collection("Users").document(userId).update("FCMtoken", token)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Log.d("FCM", "Token saved successfully");
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.w("FCM", "Error saving token", e);
-                                }
-                            });
-                }
-            });
+//            FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+//                @Override
+//                public void onComplete(@NonNull Task<String> task) {
+//                    if (!task.isSuccessful()) {
+//                        Log.w("FCM", "Fetching FCM registration token failed", task.getException());
+//                        return;
+//                    }
+//                    String token = task.getResult();
+//
+//                    fStore.collection("Users").document(userId).update("FCMtoken", token)
+//                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                @Override
+//                                public void onSuccess(Void aVoid) {
+//                                    Log.d("FCM", "Token saved successfully");
+//                                }
+//                            }).addOnFailureListener(new OnFailureListener() {
+//                                @Override
+//                                public void onFailure(@NonNull Exception e) {
+//                                    Log.w("FCM", "Error saving token", e);
+//                                }
+//                            });
+//                }
+//            });
         }
     }
 
@@ -250,17 +249,25 @@ public class Admin extends AppCompatActivity {
                             User user = documentSnapshot.toObject(User.class);
                             Log.d("adminjava", user.getUserEmail());
                             if (user.getFcmToken() != null) {
-//                                sendPushNotification(user.getFcmToken(), "Subsidy Status", customMessage);
+                                sendPushNotification(user.getFcmToken(), "Subsidy Status", customMessage);
                             } else {
                                 Log.d("FCMTOKEN", "FCM Token is null, skip push notification.");
                             }
-//                            MailUtils.sendEmail(user.getUserEmail(), "SUBSIDY STATUS: FOR CLAIMING", customMessage);
-                            sendSms(user.getPhoneNumber(), customMessage);
+                            MailUtils.sendEmail(user.getUserEmail(), "SUBSIDY STATUS: FOR CLAIMING", customMessage);
+                            String formattedPhoneNumber = formatPhoneNumber(user.getPhoneNumber());
+                            sendSms(formattedPhoneNumber, customMessage);
 
                         }
                         Toast.makeText(Admin.this, "Emails sent successfully", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    private String formatPhoneNumber(String phoneNumber) {
+        if (phoneNumber.startsWith("0")) {
+            return "+63" + phoneNumber.substring(1);
+        }
+        return phoneNumber;
     }
     private void sendPushNotification(String fcmToken, String title, String customMessage) {
         Handler handler = new Handler();

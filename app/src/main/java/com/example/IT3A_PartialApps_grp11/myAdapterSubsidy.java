@@ -97,15 +97,21 @@ public class myAdapterSubsidy extends RecyclerView.Adapter<myAdapterSubsidy.myvi
     private void updateSubsidyStatus(String userId, String newStatus, int positionToUpdate) {
         FirebaseFirestore fStore = FirebaseFirestore.getInstance();
 
-        // Create a map to update the fields
         Map<String, Object> updates = new HashMap<>();
         updates.put("SubsidyStatus", newStatus);
-        updates.put("timestamp", new Timestamp(new Date()));
+
+        if ("Claiming".equals(newStatus)) {
+            updates.put("timestamp", new Timestamp(new Date()));
+        }
 
         fStore.collection("Users").document(userId).update(updates)
                 .addOnSuccessListener(aVoid -> {
                     subsidylist.get(positionToUpdate).setSubsidyStatus(newStatus);
-                    subsidylist.get(positionToUpdate).setTimestamp(new Timestamp(new Date()));
+                    if ("Claiming".equals(newStatus)) {
+                        subsidylist.get(positionToUpdate).setTimestamp(new Timestamp(new Date()));
+                    } else {
+                        subsidylist.get(positionToUpdate).setTimestamp(null);
+                    }
                     notifyItemChanged(positionToUpdate);
                 })
                 .addOnFailureListener(e -> {

@@ -9,9 +9,9 @@
               <option name="connection">
                 <ConnectionSetting>
                   <option name="appId" value="com.example.IT3A_PartialApps_grp11" />
-                  <option name="mobileSdkAppId" value="1:1068476217977:android:c32ea1c63d13cc863172a8" />
-                  <option name="projectId" value="finalprojbrgymanagement" />
-                  <option name="projectNumber" value="1068476217977" />
+                  <option name="mobileSdkAppId" value="1:904251459032:android:4c5620d7f0e63c452c9ead" />
+                  <option name="projectId" value="finalprojbrgymanagementnotifs" />
+                  <option name="projectNumber" value="904251459032" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

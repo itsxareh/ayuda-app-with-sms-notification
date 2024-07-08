@@ -27,6 +27,8 @@ public class Login extends AppCompatActivity {
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
 
+    private static final String TAG = "LoginActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,37 +58,63 @@ public class Login extends AppCompatActivity {
                     return;
                 }
 
-                fAuth.signInWithEmailAndPassword(email.getText().toString(), password.getText().toString()).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                    @Override
-                    public void onSuccess(AuthResult authResult) {
-                        Toast.makeText(Login.this, "Logged in Successfully!", Toast.LENGTH_SHORT).show();
-                        checkUserAccessLevel(authResult.getUser().getUid());
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        showAlertDialog("Password is incorrect or field is incomplete.");
-                    }
-                });
+                Log.d(TAG, "Attempting to sign in with email: " + email.getText().toString());
+
+                fAuth.signInWithEmailAndPassword(email.getText().toString(), password.getText().toString())
+                        .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                            @Override
+                            public void onSuccess(AuthResult authResult) {
+                                Log.d(TAG, "Sign-in successful");
+                                Toast.makeText(Login.this, "Logged in Successfully!", Toast.LENGTH_SHORT).show();
+                                checkUserAccessLevel(authResult.getUser().getUid());
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG, "Sign-in failed: " + e.getMessage());
+                                showAlertDialog("Password is incorrect or field is incomplete.");
+                            }
+                        });
             }
         });
     }
 
     private void checkUserAccessLevel(String uid) {
+        Log.d(TAG, "Checking user access level for UID: " + uid);
+
         DocumentReference df = fStore.collection("Users").document(uid);
+
         df.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                Log.d("TAG", "onSuccess: " + documentSnapshot.getData());
+                if (documentSnapshot.exists()) {
+                    String isBrgy = documentSnapshot.getString("isBrgy");
+                    String isResi = documentSnapshot.getString("isResi");
 
-                if (documentSnapshot.getString("isBrgy") != null) {
-                    startActivity(new Intent(getApplicationContext(), Admin.class));
-                    finish();
+                    Log.d(TAG, "Document data: " + documentSnapshot.getData());
+                    Log.d(TAG, "isBrgy: " + isBrgy);
+                    Log.d(TAG, "isResi: " + isResi);
+
+                    if (isBrgy != null && isBrgy.equals("1")) {
+                        startActivity(new Intent(getApplicationContext(), Admin.class));
+                        finish();
+                    } else if (isResi != null && isResi.equals("2")) {
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        finish();
+                    } else {
+                        showAlertDialog("User access level is undefined.");
+                    }
+                } else {
+                    Log.d(TAG, "User document does not exist.");
+                    showAlertDialog("User document does not exist.");
                 }
-                if (documentSnapshot.getString("isResi") != null) {
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                    finish();
-                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, "Failed to retrieve user data: " + e.getMessage());
+                showAlertDialog("Failed to retrieve user data.");
             }
         });
     }
@@ -112,33 +140,5 @@ public class Login extends AppCompatActivity {
                 })
                 .create()
                 .show();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-            DocumentReference df = FirebaseFirestore.getInstance().collection("Users").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
-            df.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                @Override
-                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    if (documentSnapshot.getString("isBrgy") != null) {
-                        startActivity(new Intent(getApplicationContext(), Admin.class));
-                        finish();
-                    }
-                    if (documentSnapshot.getString("isResi") != null) {
-                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                        finish();
-                    }
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    FirebaseAuth.getInstance().signOut();
-                    startActivity(new Intent(getApplicationContext(), Login.class));
-                    finish();
-                }
-            });
-        }
     }
 }
